@@ -47,43 +47,44 @@ class Main extends React.Component{
 			
 			//Create the svg
 			const svg = d3.select("svg").attr("width", w).attr("height", h);
+			
 
-			//Creating the Scale
+			//Create the xScale and yScale
+			const dateRegex = /\d{4}/gi; //get the first four digits
+			let yearArray = [];
+			dataset.forEach((data)=>{
+				yearArray.push(parseInt(data[0].match(dateRegex)));
+			});
+
+			let myValues = Array.from(new Map(yearArray.map(x => [x, x])).values());
+
+			let fiveMultVals = myValues.filter((elem)=>(elem % 5 === 0));
+
+			let scaleDisplay = [];
+			fiveMultVals.forEach((val)=>{
+				scaleDisplay.push(new Date(parseInt(val), 0, 1));
+			});
+
+			let distinctValues = [];
+			myValues.forEach((data)=>{
+				distinctValues.push(new Date(parseInt(data), 0, 1));
+			});
+
+
 			const [xScale, yScale] = [
-				d3.scaleTime()
-					.domain(d3.extent(dataset, d => new Date(d[0])))
-					.range([padding, w - padding]),
-				d3.scaleLinear()
-					.domain([0, d3.max(dataset, (d) => (d[1]))])
-					.range([h - padding, padding])
-			];
+  d3.scaleTime().domain([distinctValues[0], distinctValues[distinctValues.length - 1]]).range([padding, w - padding]),
+  d3.scaleLinear().domain([0, d3.max(dataset, (d) => (d[1]))]).range([h - padding, padding])
+];
 			//Creating the shapes
-			const shape = svg.selectAll("rect")
-			.data(dataset)
-			.enter()
-			.append("rect").attr('class', 'bar').attr("data-date", (d) => (d[0])).attr("data-gdp", (d)=>(d[1]))
-			.attr("height", d => yScale(0) - yScale(d[1]))
-			.attr("width", `${(w - 2 * padding) / dataset.length}px`)
-			.attr("x", (d, i) => xScale(new Date(d[0])))
-			.attr("y", d => yScale(d[1]));
-
-			//Label
-			const yearRegex = /\d{4}/ig;
-			shape.on("mouseenter", (i, d)=>{
-				d3.select(".mainContainer").append("div").attr("id", "tooltip").attr("data-date", (d[0])).html(()=>{
-					return (parseInt(d[0].split('-')[1]) >= 1 && parseInt(d[0].split('-')[1]) < 4)?(`<div>Date: ${d[0].match(yearRegex)} Q1 <br> GDP: $${d[1]} Billion</div>`):(parseInt(d[0].split('-')[1]) >= 4 && parseInt(d[0].split('-')[1]) < 7)?(`<div>Date: ${d[0].match(yearRegex)} Q2 <br> GDP: $${d[1]} Billion</div>`):(parseInt(d[0].split('-')[1]) >= 7 && parseInt(d[0].split('-')[1]) < 10)?(`<div>Date: ${d[0].match(yearRegex)} Q3 <br> GDP: $${d[1]} Billion</div>`):(`<div>Date: ${d[0].match(yearRegex)} Q4 <br> GDP: $${d[1]} Billion</div>`)});
-			}).on("mouseout", ()=>{d3.select("#tooltip").remove()});
+			svg.selectAll("rect").data(dataset).enter().append("rect").attr("height", (d, i) => (d[1])).attr("width", `${2}px`).attr("x", (d, i) => xScale(i*2.2)).attr("y", 0);
 
 			//Create xAxis and yAxis
-			const [xAxis, yAxis] = [d3.axisBottom(xScale), d3.axisLeft(yScale)];
+			const [xAxis, yAxis] = [d3.axisBottom(xScale)
+  .tickValues(scaleDisplay)
+  .tickFormat(d3.timeFormat('%Y')), d3.axisLeft(yScale)];
 
 			svg.append("g").attr("transform", `translate(0, ${h - padding})`).attr('id', 'x-axis').call(xAxis); //render xAxis
-			svg.append("g").attr("transform", `translate(${padding}, 0)`).attr('id', 'y-axis').call(yAxis).append("text")
-			.attr("transform", "rotate(-90)")
-			.attr("y", 250)
-			.attr("dy", "250")
-			.style("text-anchor", "end")
-			.text("Y-axis Label"); //render yAxis
+			svg.append("g").attr("transform", `translate(${padding}, 0)`).attr('id', 'y-axis').call(yAxis); //render yAxis
 		}
 	}
 

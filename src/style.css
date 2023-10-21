@@ -1,0 +1,74 @@
+@import url("https://fonts.googleapis.com/css2?family=Concert+One&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Fredoka:wght@300;400;500&family=Smooch+Sans:wght@500&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 10px;
+}
+
+.myJson {
+  color: white;
+}
+
+.backgroundColor {
+  background-color: #1d3557;
+}
+
+.bar {
+  fill: rgb(104, 104, 255);
+}
+
+#tooltip {
+  width: 210px;
+  height: 54px;
+  background-color: transparent;
+  box-shadow: 1px 1px 2px 1px rgb(45, 45, 45);
+  border: 0.2px solid rgba(0, 0, 0, 0.336);
+  border-radius: 5px;
+  position: absolute;
+  margin-top: 400px;
+  margin-left: 60px;
+  font-size: 2rem;
+  font-family: "wticons";
+  padding: 1rem;
+  display: grid;
+  grid-template-rows: 1fr;
+  place-content: center;
+  row-gap: 0;
+}
+
+.wrapperContainer {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  place-content: center;
+}
+
+.mainContainer {
+  background: #fff;
+  width: 100rem;
+  height: 60rem;
+  margin: auto;
+  font-size: 1.6rem;
+  border-radius: 5px;
+  box-shadow: 20px 20px 20px black;
+  padding: 1rem;
+  display: grid;
+  grid-template-rows: 1fr 80% 1fr;
+}
+.mainContainer #title {
+  text-align: center;
+  font-size: 4rem;
+  font-weight: bolder;
+}
+.mainContainer .link {
+  text-align: right;
+}
+.mainContainer svg {
+  background-color: transparent;
+}/*# sourceMappingURL=style.css.map */
